@@ -31,12 +31,12 @@ async function run() {
 
     const carsLandCollection = client.db("carsLand").collection("cars");
 
-    // Get all toys 
-    app.get('/allToys', async(req, res) => {
+    // Get all toys
+    app.get("/allToys", async (req, res) => {
       const cursor = carsLandCollection.find();
       const result = await cursor.toArray();
-      res.send(result)
-    })
+      res.send(result);
+    });
 
     app.get("/toy/:id", async (req, res) => {
       const id = req.params.id;
@@ -46,15 +46,27 @@ async function run() {
     });
 
     // Posting Cars Land
-    app.post('/add-toys', async (req, res) => {
+    app.post("/add-toys", async (req, res) => {
       const newCars = req.body;
       console.log(newCars);
-      const result = await carsLandCollection.insertOne(newCars)
-      res.send(result)
-    })
+      const result = await carsLandCollection.insertOne(newCars);
+      res.send(result);
+    });
 
-
-
+    // For Searching name, sellerName, subCategory
+    app.get("/getToysByText/:text", async (req, res) => {
+      const text = req.params.text;
+      const result = await carsLandCollection
+        .find({
+          $or: [
+            { name: { $regex: text, $options: "i" } },
+            { sellerName: { $regex: text, $options: "i" } },
+            { subCategory: { $regex: text, $options: "i" } },
+          ],
+        })
+        .toArray();
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
