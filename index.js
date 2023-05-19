@@ -68,6 +68,33 @@ async function run() {
       res.send(result);
     });
 
+    // Update Single Toys
+    app.put("/toy/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedChocolate = req.body;
+      const chocolate = {
+        $set: {
+          name: updatedChocolate.name,
+          photoUrl: updatedChocolate.photoUrl,
+          price: updatedChocolate.price,
+          quantity: updatedChocolate.quantity,
+          rating: updatedChocolate.rating,
+          sellerEmail: updatedChocolate.sellerEmail,
+          sellerName: updatedChocolate.sellerName,
+          subCategory: updatedChocolate.subCategory,
+          details: updatedChocolate.details,
+        },
+      };
+      const result = await carsLandCollection.updateOne(
+        filter,
+        chocolate,
+        options
+      );
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
