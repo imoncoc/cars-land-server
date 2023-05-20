@@ -38,6 +38,7 @@ async function run() {
       res.send(result);
     });
 
+    // Get Toys by ID
     app.get("/toy/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -58,6 +59,15 @@ async function run() {
       console.log(req.params.sellerEmail);
       const result = await carsLandCollection
         .find({ sellerEmail: req.params.email })
+        .toArray();
+      res.send(result);
+    });
+
+    // Get Data By Sub-category
+    app.get("/category/:subCategory", async (req, res) => {
+      console.log(req.params.subCategory);
+      const result = await carsLandCollection
+        .find({ subCategory: req.params.subCategory })
         .toArray();
       res.send(result);
     });
@@ -101,6 +111,14 @@ async function run() {
         chocolate,
         options
       );
+      res.send(result);
+    });
+
+    // Toys Delete by ID
+    app.delete("/toy/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await carsLandCollection.deleteOne(query);
       res.send(result);
     });
 
