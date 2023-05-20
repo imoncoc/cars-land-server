@@ -55,11 +55,48 @@ async function run() {
     });
 
     // Get Data By Emails
-    app.get("/allToys/:email", async (req, res) => {
-      console.log(req.params.sellerEmail);
-      const result = await carsLandCollection
-        .find({ sellerEmail: req.params.email })
-        .toArray();
+    // app.get("/allToys/:email", async (req, res) => {
+    //   console.log(req.params.sellerEmail);
+    //   const result = await carsLandCollection
+    //     .find({ sellerEmail: req.params.email })
+    //     .toArray();
+    //   res.send(result);
+    // });
+
+    // Get Data By Emails and Ascending or descending order 
+    // app.get("/getEmail", async (req, res) => {
+    //   let query = {};
+    //   if(req.query?.email){
+    //     query = {sellerEmail: req.query.email}
+    //   }
+      
+    //   const sortType = req.query.type === 'ascending';
+    //   const result = await carsLandCollection.find(query).sort({price: sortType? 1 : -1}).toArray()
+    //   res.send(result);
+    // });
+    app.get("/getEmail", async (req, res) => {
+      let query = {};
+      if (req.query?.email) {
+        query = { sellerEmail: req.query.email };
+      }
+
+      const sortType = req.query.type === "ascending";
+      const result = await carsLandCollection.find(query).toArray();
+
+      // Convert the price field to a numeric type
+      result.forEach((car) => {
+        car.price = parseFloat(car.price);
+      });
+
+      // Sort the results by price
+      result.sort((a, b) => {
+        if (sortType) {
+          return a.price - b.price;
+        } else {
+          return b.price - a.price;
+        }
+      });
+
       res.send(result);
     });
 
