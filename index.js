@@ -33,7 +33,7 @@ async function run() {
 
     // Get all toys
     app.get("/allToys", async (req, res) => {
-      const cursor = carsLandCollection.find();
+      const cursor = carsLandCollection.find().limit(20)
       const result = await cursor.toArray();
       res.send(result);
     });
@@ -148,6 +148,29 @@ async function run() {
         chocolate,
         options
       );
+      res.send(result);
+    });
+
+
+    // Get 10 Random Photos 
+    app.get("/randomPhotoUrls", async (req, res) => {
+      const result = await carsLandCollection
+        .aggregate([
+          { $sample: { size: 12 } },
+          { $project: { _id: 0, photoUrl: 1 } },
+        ])
+        .toArray();
+
+      const photoUrls = result.map((item) => item.photoUrl);
+      res.send(photoUrls);
+    });
+
+    // Get 5 Random Data
+    app.get("/randomData", async (req, res) => {
+      const result = await carsLandCollection
+        .aggregate([{ $sample: { size: 5 } }])
+        .toArray();
+
       res.send(result);
     });
 
