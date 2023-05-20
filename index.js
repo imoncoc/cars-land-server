@@ -53,6 +53,15 @@ async function run() {
       res.send(result);
     });
 
+    // Get Data By Emails
+    app.get("/allToys/:email", async (req, res) => {
+      console.log(req.params.sellerEmail);
+      const result = await carsLandCollection
+        .find({ sellerEmail: req.params.email })
+        .toArray();
+      res.send(result);
+    });
+
     // For Searching name, sellerName, subCategory
     app.get("/getToysByText/:text", async (req, res) => {
       const text = req.params.text;
